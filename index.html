@@ -8,28 +8,40 @@
     <link rel="stylesheet" href="./src/style/style.css">
 </head>
 <body>
-    <input type="file" id="file_input" onchange="readURL(this)" />
-    <canvas class="canvas" id="canvas">
-
-    </canvas>
+    <div class="content">
+      
+        <canvas class="canvas" id="canvas_init"></canvas>
+        <canvas class="canvas" id="canvas"></canvas>
+        <input type="file" class="content_fileinput" id="file_input" onchange="readURL(this)" /><br>
+        <input type="number" class="content_sizematrix" id="size_matrix"  value = "3"/>
+        <input type="button" class="content_updatesize" id="update_median" onclick="updateSizeMatrix(this)" value="Пересчитать фильтр для текущего изображения" />
+    </div>
+  
 </body>
 <script src ="./src/js/index.js"></script>
 <!-- <script src ="./src/js/triggers.js"></script> -->
 <script>
     let file_input = document.getElementById("file_input"),
-    canvas = document.getElementById('canvas')
-   
+    canvas = document.getElementById('canvas');
+    let filter_obj,size_matrix = document.getElementById("size_matrix").value;
+    canvas_init =  document.getElementById('canvas_init');
     function readURL(input) {
         console.log("file!",input);
         if (input.files && input.files[0]) {
             var reader = new FileReader();
             reader.onload = function (e) {
-               
-                filter_obj = new ImageFilter(canvas,e.target.result);
+
+                filter_obj = new ImageFilter(canvas,canvas_init, e.target.result, size_matrix);
                 filter_obj.start();
             };
             reader.readAsDataURL(input.files[0]);
         }
+    }
+    function updateSizeMatrix(){
+        let size_matrix = document.getElementById("size_matrix").value;
+        console.log("filter_obj",filter_obj);
+        filter_obj.updateSizeMatrix(size_matrix);
+        filter_obj.start();
     }
 
 
